@@ -31,6 +31,9 @@
  '(indent-tabs-mode nil)
  '(ns-tool-bar-display-mode (quote icons) t)
  '(ns-tool-bar-size-mode (quote regular) t)
+ '(package-selected-packages
+   (quote
+    (rust-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode)))
  '(visual-line-mode nil t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -61,20 +64,6 @@
 
 (global-set-key (kbd "C-c p") 'open-python-project)
 
-;; Check custom-file compatibility
-(when (and (boundp 'aquamacs-version-id)
-	   (< (floor (/ aquamacs-version-id 10))
-	   (floor (/ aquamacs-customization-version-id 10))))
-  (defadvice frame-notice-user-settings (before show-version-warning activate)
-    (defvar aquamacs-backup-custom-file nil "Backup of `custom-file', if any.")
-    (setq aquamacs-backup-custom-file "~/Library/Preferences/Aquamacs Emacs/customizations.2.1.el")
-    (let ((msg "Aquamacs options were saved by a more recent program version.
-Errors may occur.  Save Options to overwrite the customization file. The original, older customization file was backed up to ~/Library/Preferences/Aquamacs Emacs/customizations.2.1.el."))
-      (if window-system
-	  (x-popup-dialog t (list msg '("OK" . nil) 'no-cancel) "Warning")
-	(message msg)))))
-;; End compatibility check
-
 ;; ELPA
 ;; source in ~/.emacs.d/elpa
 ;; Requisites: Emacs >= 24
@@ -93,7 +82,7 @@ Errors may occur.  Save Options to overwrite the customization file. The origina
 ;; make more packages available with the package installer
 (defvar to-install)
 (setq to-install
-      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck))
+      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck exec-path-from-shell))
 
 (mapc 'install-if-needed to-install)
 
@@ -104,9 +93,15 @@ Errors may occur.  Save Options to overwrite the customization file. The origina
 (require 'autopair)
 (require 'yasnippet)
 (require 'flycheck)
+(require 'exec-path-from-shell)
+
 (global-flycheck-mode t)
 
 (global-set-key [f7] 'find-file-in-repository)
+
+; Ensure that GUI session inherits $PATH
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
 
 ; auto-complete mode extra settings
 (setq
@@ -151,13 +146,10 @@ Errors may occur.  Save Options to overwrite the customization file. The origina
       '("~/.emacs.d/elpa/yasnippet-20151011.1823/snippets/python-mode"))
 
 ;; -------------------- extra nice things --------------------
-;; use control + cursor to move around windows
-(require 'windmove)
-(windmove-default-keybindings 'control)
-
 (show-paren-mode t)
 
 ;; Turn beep off
 (setq visible-bell nil)
 (provide 'customizations)
+
 ;;; customizations.el ends here
