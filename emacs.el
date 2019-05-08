@@ -80,6 +80,7 @@ pastes from X-SECONDARY."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
     (exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
@@ -140,4 +141,41 @@ pastes from X-SECONDARY."
           (lambda ()
             (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
+;; Color theme
+(load-theme 'tsdh-dark)
+
+;; Disable toolbar
+(tool-bar-mode -1)
+
+;; Toggle fullscreen
+(defun my-fullscreen ()
+  (interactive)
+  (set-frame-parameter nil 'fullscreen 'fullboth)) ;this makes the frame go fullscreen
+
+(defun my-non-fullscreen ()
+  (interactive)
+  (set-frame-parameter nil 'width 82)
+  (set-frame-parameter nil 'fullscreen 'fullheight))
+
+(defun toggle-fullscreen ()
+  (interactive)
+  (if (eq (frame-parameter nil 'fullscreen) 'fullboth)  ;tests if already fullscreened
+      (my-non-fullscreen)
+    (my-fullscreen)))
+
+(global-set-key (kbd "<f11>") 'toggle-fullscreen) 
+
+;; Cua-mode
+(cua-mode t)
+(setq cua-auto-tabify-rectangles nil)
+(transient-mark-mode 1)
+(setq cua-keep-region-after-copy t)
+
+;; Useful key bindings
+(windmove-default-keybindings 'control)
+(global-set-key (kbd "C-a") 'mark-whole-buffer)
+(global-set-key (kbd "C-w") 'kill-buffer-and-window)
+(global-set-key (kbd "C-o") 'menu-find-file-existing)
+
+(provide '.emacs)
 ;;; emacs.el ends here
