@@ -71,6 +71,8 @@
         <normal>
         </normal>
         <selected>
+            <background color="ebebeb"/>
+            <foreground color="2d2d2d"/>
         </selected>
     </location_bar>
     <status_bar>
