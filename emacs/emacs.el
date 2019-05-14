@@ -133,6 +133,8 @@ pastes from X-SECONDARY."
 (ido-mode t)
 
 ;; YASnippets
+;; Clone https://github.com/AndreaCrotti/yasnippet-snippets
+;; and put snippets to ~/.emacs.d/snippets/
 (yas-global-mode 1)
 
 ;; YAML mode hook
@@ -176,6 +178,12 @@ pastes from X-SECONDARY."
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "C-w") 'kill-buffer-and-window)
 (global-set-key (kbd "C-o") 'menu-find-file-existing)
+
+; isearch requires some customization to work with none default keys,
+; since it uses its own keymap during a search.  These changes are *always*
+; active, and not toggled with touchstream mode!  Luckly for us, the keys are
+; we need are not used by isearch so there are no conflicts.
+(define-key isearch-mode-map [(control f)] 'isearch-repeat-forward)
 
 (provide '.emacs)
 ;;; emacs.el ends here
