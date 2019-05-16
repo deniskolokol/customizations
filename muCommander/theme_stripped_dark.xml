@@ -3,12 +3,13 @@
     <file_table>
         <normal>
             <background color="232323"/>
+            <inactive_background color="232323"/>
         </normal>
         <selected>
             <background color="5f5f5f"/>
         </selected>
         <alternate>
-            <inactive_background color="232323"/>
+            <inactive_background color="2d2d2d"/>
         </alternate>
         <unmatched>
         </unmatched>
