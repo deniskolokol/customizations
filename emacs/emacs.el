@@ -2,48 +2,6 @@
 
 ;; Warning: copy this to /home/$USER/.emacs
 
-;; Copy to X-clipboard 
-(defun my-copy-to-xclipboard(arg)
-  (interactive "P")
-  (cond
-    ((not (use-region-p))
-      (message "Nothing to yank to X-clipboard"))
-    ((and (not (display-graphic-p))
-         (/= 0 (shell-command-on-region
-                 (region-beginning) (region-end) "xsel -i -b")))
-      (error "Is program `xsel' installed?"))
-    (t
-      (when (display-graphic-p)
-        (call-interactively 'clipboard-kill-ring-save))
-      (message "Yanked region to X-clipboard")
-      (when arg
-        (kill-region  (region-beginning) (region-end)))
-      (deactivate-mark))))
-
-(defun my-cut-to-xclipboard()
-  (interactive)
-  (my-copy-to-xclipboard t))
-
-(defun my-paste-from-xclipboard()
-  "Uses shell command `xsel -o' to paste from x-clipboard. With
-one prefix arg, pastes from X-PRIMARY, and with two prefix args,
-pastes from X-SECONDARY."
-  (interactive)
-  (if (display-graphic-p)
-    (clipboard-yank)
-   (let*
-     ((opt (prefix-numeric-value current-prefix-arg))
-      (opt (cond
-       ((=  1 opt) "b")
-       ((=  4 opt) "p")
-       ((= 16 opt) "s"))))
-    (insert (shell-command-to-string (concat "xsel -o -" opt))))))
-
-(global-set-key (kbd "C-c C-w") 'my-cut-to-xclipboard)
-(global-set-key (kbd "C-c M-w") 'my-copy-to-xclipboard)
-(global-set-key (kbd "C-c C-y") 'my-paste-from-xclipboard)
-
-
 ;; ELPA
 ;; source in ~/.emacs.d/elpa
 ;; Requisites: Emacs >= 24
@@ -67,8 +25,6 @@ pastes from X-SECONDARY."
 (mapc 'install-if-needed to-install)
 
 (require 'magit)
-(global-set-key (kbd "C-x g") 'magit-status)
-
 (require 'auto-complete)
 (require 'autopair)
 (require 'yasnippet)
@@ -92,8 +48,6 @@ pastes from X-SECONDARY."
  )
 
 (global-flycheck-mode t)
-
-(global-set-key [f7] 'find-file-in-repository)
 
 ; auto-complete mode extra settings
 (setq
@@ -165,8 +119,6 @@ pastes from X-SECONDARY."
       (my-non-fullscreen)
     (my-fullscreen)))
 
-(global-set-key (kbd "<f11>") 'toggle-fullscreen) 
-
 ;; Cua-mode
 (cua-mode t)
 (setq cua-auto-tabify-rectangles nil)
@@ -175,15 +127,23 @@ pastes from X-SECONDARY."
 
 ;; Useful key bindings
 (windmove-default-keybindings 'control)
-(global-set-key (kbd "C-a") 'mark-whole-buffer)
-(global-set-key (kbd "C-w") 'kill-buffer-and-window)
-(global-set-key (kbd "C-o") 'menu-find-file-existing)
 
 ; isearch requires some customization to work with none default keys,
 ; since it uses its own keymap during a search.  These changes are *always*
 ; active, and not toggled with touchstream mode!  Luckly for us, the keys are
 ; we need are not used by isearch so there are no conflicts.
-(define-key isearch-mode-map [(control f)] 'isearch-repeat-forward)
+(global-set-key (kbd "C-f") 'isearch-forward)
+(define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
+(global-set-key (kbd "C-s") 'save-buffer)
+(global-set-key (kbd "C-a") 'mark-whole-buffer)
+(global-set-key (kbd "C-w") 'kill-buffer)
+(global-set-key (kbd "C-o") 'menu-find-file-existing)
+(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "<f11>") 'toggle-fullscreen)
+(global-set-key (kbd "<f7>") 'find-file-in-repository)
+
+;; Line numbers
+(global-linum-mode t)
 
 (provide '.emacs)
 ;;; emacs.el ends here
