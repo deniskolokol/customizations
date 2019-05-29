@@ -39,13 +39,13 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
+    (sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(mode-line ((t (:background "blue4" :box (:line-width 1 :color "medium blue") :family "\"DejaVu Sans Mono-10\"")))))
 
 (global-flycheck-mode t)
 
@@ -126,7 +126,7 @@
 (setq cua-keep-region-after-copy t)
 
 ;; Useful key bindings
-(windmove-default-keybindings 'control)
+(windmove-default-keybindings 'meta)
 
 ; isearch requires some customization to work with none default keys,
 ; since it uses its own keymap during a search.  These changes are *always*
@@ -136,14 +136,17 @@
 (define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
-(global-set-key (kbd "C-w") 'kill-buffer)
 (global-set-key (kbd "C-o") 'menu-find-file-existing)
+(global-set-key (kbd "C-w") 'kill-buffer)
+(global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "<f11>") 'toggle-fullscreen)
 (global-set-key (kbd "<f7>") 'find-file-in-repository)
 
-;; Line numbers
+;; Cosmetics
 (global-linum-mode t)
+(global-hl-line-mode t)
+(column-number-mode t)
 
 (provide '.emacs)
 ;;; emacs.el ends here
