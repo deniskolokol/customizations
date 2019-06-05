@@ -20,7 +20,7 @@
 ;; make more packages available with the package installer
 (defvar to-install)
 (setq to-install
-      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck exec-path-from-shell yaml-mode))
+      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck exec-path-from-shell yaml-mode pyvenv pyenv-mode))
 
 (mapc 'install-if-needed to-install)
 
@@ -39,7 +39,7 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
+    (pyenv-mode pyvenv sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -84,6 +84,9 @@
 
 (add-hook 'python-mode-hook 'auto-complete-mode)
 
+(pyenv-mode)
+
+;; Switch on ido mode
 (ido-mode t)
 
 ;; YASnippets
@@ -119,6 +122,17 @@
       (my-non-fullscreen)
     (my-fullscreen)))
 
+;; Layout for Python projects
+(defun open-python-project ()
+  (interactive)
+  (delete-other-windows)
+  (toggle-fullscreen)
+  (split-window-horizontally)
+  (next-multiframe-window))
+
+(global-set-key (kbd "C-x p") 'open-python-project)
+;; End layout for Python projects
+
 ;; Cua-mode
 (cua-mode t)
 (setq cua-auto-tabify-rectangles nil)
@@ -147,6 +161,7 @@
 (global-linum-mode t)
 (global-hl-line-mode t)
 (column-number-mode t)
+(display-time-mode 1)
 
 (provide '.emacs)
 ;;; emacs.el ends here
