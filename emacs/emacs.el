@@ -1,6 +1,11 @@
-;;; package --- Emacs customisations
 
+;;; package --- Emacs customisations
 ;; Warning: copy this to /home/$USER/.emacs
+
+;;; Code:
+
+;; Kill process buffer without confirmation
+(setq kill-buffer-query-functions nil)
 
 ;; ELPA
 ;; source in ~/.emacs.d/elpa
@@ -11,7 +16,13 @@
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/"))
 
-(package-refresh-contents)
+;; Run (package-refresh-contents) on first install each time.
+;; Solution taken from https://github.com/jwiegley/use-package/issues/256 (raxod502)
+(defun my-package-install-refresh-contents (&rest args)
+  (package-refresh-contents)
+  (advice-remove 'package-install 'my-package-install-refresh-contents))
+
+(advice-add 'package-install :before 'my-package-install-refresh-contents)
 
 (defun install-if-needed (package)
   (unless (package-installed-p package)
@@ -20,7 +31,7 @@
 ;; make more packages available with the package installer
 (defvar to-install)
 (setq to-install
-      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck exec-path-from-shell yaml-mode pyvenv pyenv-mode neotree))
+      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck exec-path-from-shell yaml-mode pyvenv pyenv-mode dockerfile-mode all-the-icons neotree))
 
 (mapc 'install-if-needed to-install)
 
@@ -29,12 +40,15 @@
 (require 'autopair)
 (require 'yasnippet)
 (require 'flycheck)
+(require 'dockerfile-mode)
 (require 'exec-path-from-shell)
 (require 'w3m)
+(require 'all-the-icons)
 
 ;; Neotree settings
-(add-to-list 'load-path "~/Projects")
 (require 'neotree)
+(setq neo-window-fixed-size nil)
+(neotree-dir "~/Projects")
 
 ;; SuperCollider mode settings
 (add-to-list 'load-path "~/.emacs.d/vendor/sclang")
@@ -48,7 +62,7 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (neotree calist w3m sclang pyenv-mode pyvenv sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
+    (dockerfile-mode all-the-icons neotree calist w3m sclang pyenv-mode pyvenv sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -98,7 +112,10 @@
 (when (executable-find "ipython")
   (setq python-shell-interpreter "ipython"))
 
-;; Switch on ido mode
+;; Enable IDO everywhere.
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(setq ido-use-filename-at-point 'guess)
 (ido-mode t)
 
 ;; YASnippets
@@ -242,11 +259,15 @@
 (defun open-sclang-project ()
   (interactive)
   (delete-other-windows)
-  (toggle-fullscreen)
+  (if (neo-global--window-exists-p)
+      (neotree-hide)) ; Don't need this in SC mode.
+  (my-fullscreen)
+  (split-window-horizontally)
+  (windmove-left)
   (sclang-start))
 
 (global-set-key (kbd "C-x l") 'open-sclang-project)
-;; End layout for Python projects
+;; End layout for SuperCollider projects
 
 
 ;; Cua-mode
@@ -294,11 +315,31 @@
 (global-set-key (kbd "C-M->") 'py-shift-block-right)
 (global-set-key (kbd "C-M-<") 'py-shift-block-left)
 
+;; Yasnippet cheat-sheet
+(global-set-key (kbd "C-M-y") 'yas/describe-tables)
+
+;; SuperCollider related
+(global-set-key (kbd "C-S-<return>") 'sclang-eval-document)
+
+
 ;; Cosmetics
 (global-linum-mode t)
 (global-hl-line-mode t)
 (column-number-mode t)
 (display-time-mode 1)
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(all-the-icons-icon-for-mode 'cua-mode)
+
+;; Make things a little more responsive in general.
+(setq echo-keystrokes 0.1
+      tooltip-delay 0
+      tooltip-short-delay 0)
+
+;; Only ask for y or n rather than yes or no.
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; Start in fullscrean
+(my-fullscreen)
 
 (provide '.emacs)
 ;;; emacs.el ends here
