@@ -50,6 +50,17 @@
 (setq neo-window-fixed-size nil)
 (neotree-dir "~/Projects")
 
+;; Set the neo-window-width to the current width of the
+;; neotree window, to trick neotree into resetting the
+;; width back to the actual window width.
+;; Fixes: https://github.com/jaypei/emacs-neotree/issues/262
+(eval-after-load "neotree"
+  '(add-to-list 'window-size-change-functions
+		(lambda (frame)
+		  (let ((neo-window (neo-global--get-window)))
+		    (unless (null neo-window)
+		      (setq neo-window-width (window-width neo-window)))))))
+
 ;; SuperCollider mode settings
 (add-to-list 'load-path "~/.emacs.d/vendor/sclang")
 (require 'sclang)
@@ -242,6 +253,24 @@
 ;; End smart resizing windows
 
 
+;; Move buffer to other window.
+;; after c-x 3 to split screen this lets you move buffers between sides.
+;; altered code from:
+;; http://stackoverflow.com/questions/1774832/how-to-swap-the-buffers-in-2-windows-emacs
+(defun swap-buffer-window ()
+  "Put the buffer from the selected window in next window, and vice versa."
+  (interactive)
+  (let* ((this (selected-window))
+     (other (next-window))
+     (this-buffer (window-buffer this)))
+    (set-window-buffer other this-buffer)
+    (tabbar-close-tab) ;;close current tab
+    (other-window 1) ;;swap cursor to new buffer
+    )
+  )
+;; End Move buffer to other window.
+
+
 ;; Layout for Python projects
 (defun open-python-project ()
   (interactive)
@@ -250,8 +279,6 @@
   (split-window-horizontally)
   (split-window-vertically)
   (next-multiframe-window))
-
-(global-set-key (kbd "C-x p") 'open-python-project)
 ;; End layout for Python projects
 
 
@@ -280,14 +307,14 @@
 (windmove-default-keybindings 'meta)
 
 ; isearch requires some customization to work with none default keys,
-; since it uses its own keymap during a search.  These changes are *always*
-; active, and not toggled with touchstream mode!  Luckly for us, the keys are
+; since it uses its own keymap during a search. These changes are *always*
+; active, and not toggled with touchstream mode! Luckly for us, the keys are
 ; we need are not used by isearch so there are no conflicts.
 (global-set-key (kbd "C-f") 'isearch-forward)
 (define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
-(global-set-key (kbd "C-w") 'kill-buffer)
+(global-set-key (kbd "C-w") 'kill-this-buffer)
 (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "<f11>") 'toggle-fullscreen)
@@ -309,7 +336,11 @@
 (global-set-key (kbd "M-S-<left>") 'win-resize-enlarge-vert)
 (global-set-key (kbd "M-S-<right>") 'win-resize-minimize-vert)
 
+;; Move windows
+(global-set-key (kbd "C-x /") 'swap-buffer-window)
+
 ;; Python related
+(global-set-key (kbd "C-x p") 'open-python-project)
 (global-set-key (kbd "C-c i") 'run-python)
 (global-set-key (kbd "C-c v") 'pyvenv-activate)
 (global-set-key (kbd "C-M->") 'py-shift-block-right)
@@ -319,8 +350,8 @@
 (global-set-key (kbd "C-M-y") 'yas/describe-tables)
 
 ;; SuperCollider related
-(global-set-key (kbd "C-S-<return>") 'sclang-eval-document)
-
+(global-set-key (kbd "M-<return>") 'sclang-eval-region-or-line)
+(global-set-key (kbd "C-.") 'sclang-main-stop)
 
 ;; Cosmetics
 (global-linum-mode t)
@@ -339,7 +370,11 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Start in fullscrean
-(my-fullscreen)
+;; (my-fullscreen)
+
+; Don't need this at startup.
+(if (neo-global--window-exists-p)
+    (neotree-hide))
 
 (provide '.emacs)
 ;;; emacs.el ends here
