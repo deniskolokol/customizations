@@ -1,6 +1,7 @@
-
 ;;; package --- Emacs customisations
-;; Warning: copy this to /home/$USER/.emacs
+
+;;; Commentary:
+;; copy this to /home/$USER/.emacs
 
 ;;; Code:
 
@@ -31,7 +32,7 @@
 ;; make more packages available with the package installer
 (defvar to-install)
 (setq to-install
-      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck exec-path-from-shell yaml-mode pyvenv pyenv-mode dockerfile-mode all-the-icons neotree))
+      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck exec-path-from-shell yaml-mode pyvenv pyenv-mode dockerfile-mode all-the-icons neotree sudo-edit))
 
 (mapc 'install-if-needed to-install)
 
@@ -73,13 +74,22 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (dockerfile-mode all-the-icons neotree calist w3m sclang pyenv-mode pyvenv sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
+    (sudo-edit dockerfile-mode all-the-icons neotree calist w3m sclang pyenv-mode pyvenv sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(mode-line ((t (:background "blue4" :box (:line-width 1 :color "medium blue") :family "\"DejaVu Sans Mono-10\"")))))
+
+;; Color theme
+;(load-theme 'tsdh-dark t)
+
+;; Black transparent background.
+(set-background-color "gray2")
+(add-to-list 'default-frame-alist '(background-color . "gray2"))
+(set-frame-parameter (selected-frame) 'alpha '(85 85))
+(add-to-list 'default-frame-alist '(alpha 85 85))
 
 (global-flycheck-mode t)
 
@@ -139,12 +149,6 @@
 (add-hook 'yaml-mode-hook
           (lambda ()
             (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
-
-;; Color theme
-(load-theme 'tsdh-dark)
-
-;; Disable toolbar
-(tool-bar-mode -1)
 
 ;; Move lines up/down.
 (defun move-text-internal (arg)
@@ -338,6 +342,8 @@
 
 ;; Move windows
 (global-set-key (kbd "C-x /") 'swap-buffer-window)
+(global-set-key (kbd "M-\-") 'split-window-below)
+(global-set-key (kbd "M-\\") 'split-window-right)
 
 ;; Python related
 (global-set-key (kbd "C-x p") 'open-python-project)
@@ -369,12 +375,10 @@
 ;; Only ask for y or n rather than yes or no.
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; Start in fullscrean
-;; (my-fullscreen)
+;; Disable toolbar
+(tool-bar-mode -1)
 
-; Don't need this at startup.
-(if (neo-global--window-exists-p)
-    (neotree-hide))
+(desktop-save-mode 1)
 
 (provide '.emacs)
 ;;; emacs.el ends here
