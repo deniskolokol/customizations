@@ -32,7 +32,7 @@
 ;; make more packages available with the package installer
 (defvar to-install)
 (setq to-install
-      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck exec-path-from-shell yaml-mode pyvenv pyenv-mode dockerfile-mode all-the-icons neotree sudo-edit))
+      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck exec-path-from-shell yaml-mode virtualenvwrapper dockerfile-mode all-the-icons neotree realgud sudo-edit deft))
 
 (mapc 'install-if-needed to-install)
 
@@ -45,6 +45,7 @@
 (require 'exec-path-from-shell)
 (require 'w3m)
 (require 'all-the-icons)
+(require 'deft)
 
 ;; Neotree settings
 (require 'neotree)
@@ -74,7 +75,7 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (sudo-edit dockerfile-mode all-the-icons neotree calist w3m sclang pyenv-mode pyvenv sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
+    (deft realgud sudo-edit dockerfile-mode all-the-icons neotree calist w3m sclang pyenv-mode virtualenvwrapper sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -83,7 +84,7 @@
  '(mode-line ((t (:background "blue4" :box (:line-width 1 :color "medium blue") :family "\"DejaVu Sans Mono-10\"")))))
 
 ;; Color theme
-;(load-theme 'tsdh-dark t)
+;; (load-theme 'tsdh-dark t)
 
 ;; Black transparent background.
 (set-background-color "gray2")
@@ -91,9 +92,17 @@
 (set-frame-parameter (selected-frame) 'alpha '(85 85))
 (add-to-list 'default-frame-alist '(alpha 85 85))
 
+;; Deft settings
+(setq deft-recursive t)
+(setq deft-file-naming-rules
+      '((noslash . "-")
+        (nospace . "-")
+        (case-fn . downcase)))
+
+;; Switch on global flycheck
 (global-flycheck-mode t)
 
-; auto-complete mode extra settings
+;; Auto-complete mode extra settings
 (setq
  ac-auto-start 3
  ac-override-local-map nil
@@ -181,7 +190,6 @@
    "Move region (transient-mark-mode active) or current line arg lines up."
    (interactive "*p")
    (move-text-internal (- arg)))
-;; End of Move lines up/down.
 
 
 ;; Toggle fullscreen
@@ -254,7 +262,6 @@
    ((equal "left" (win-resize-left-or-right)) (enlarge-window-horizontally 1))
    ((equal "right" (win-resize-left-or-right)) (enlarge-window-horizontally -1))
    ((equal "mid" (win-resize-left-or-right)) (enlarge-window-horizontally 1))))
-;; End smart resizing windows
 
 
 ;; Move buffer to other window.
@@ -272,7 +279,6 @@
     (other-window 1) ;;swap cursor to new buffer
     )
   )
-;; End Move buffer to other window.
 
 
 ;; Layout for Python projects
@@ -283,22 +289,25 @@
   (split-window-horizontally)
   (split-window-vertically)
   (next-multiframe-window))
-;; End layout for Python projects
+
+
+;; Virtualenvwrapper settings
+;; See reference at https://github.com/porterjamesj/virtualenvwrapper.el
+(require 'virtualenvwrapper)
+(venv-initialize-eshell)
+(setq venv-location "~/venv")
 
 
 ;; Layout for SuperCollider projects
 (defun open-sclang-project ()
   (interactive)
   (delete-other-windows)
-  (if (neo-global--window-exists-p)
-      (neotree-hide)) ; Don't need this in SC mode.
+  ;; (if (neo-global--window-exists-p)
+  ;;     (neotree-hide)) ; Don't need this in SC mode.
   (my-fullscreen)
   (split-window-horizontally)
   (windmove-left)
   (sclang-start))
-
-(global-set-key (kbd "C-x l") 'open-sclang-project)
-;; End layout for SuperCollider projects
 
 
 ;; Cua-mode
@@ -316,6 +325,7 @@
 ; we need are not used by isearch so there are no conflicts.
 (global-set-key (kbd "C-f") 'isearch-forward)
 (define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
+
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "C-w") 'kill-this-buffer)
@@ -324,6 +334,7 @@
 (global-set-key (kbd "<f11>") 'toggle-fullscreen)
 (global-set-key (kbd "C-S-u") 'move-text-up)
 (global-set-key (kbd "C-S-j") 'move-text-down)
+(global-set-key (kbd "C-c d") 'deft)
 
 ;; Open files
 (global-set-key (kbd "C-o") 'menu-find-file-existing)
@@ -348,7 +359,8 @@
 ;; Python related
 (global-set-key (kbd "C-x p") 'open-python-project)
 (global-set-key (kbd "C-c i") 'run-python)
-(global-set-key (kbd "C-c v") 'pyvenv-activate)
+(global-set-key (kbd "C-c v") 'venv-workon)
+(global-set-key (kbd "C-x v") 'venv-deactivate)
 (global-set-key (kbd "C-M->") 'py-shift-block-right)
 (global-set-key (kbd "C-M-<") 'py-shift-block-left)
 
@@ -356,6 +368,7 @@
 (global-set-key (kbd "C-M-y") 'yas/describe-tables)
 
 ;; SuperCollider related
+(global-set-key (kbd "C-x l") 'open-sclang-project)
 (global-set-key (kbd "M-<return>") 'sclang-eval-region-or-line)
 (global-set-key (kbd "C-.") 'sclang-main-stop)
 
