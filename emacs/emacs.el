@@ -47,6 +47,7 @@
 (require 'all-the-icons)
 (require 'deft)
 
+
 ;; Neotree settings
 (require 'neotree)
 (setq neo-window-fixed-size nil)
@@ -75,22 +76,30 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (deft realgud sudo-edit dockerfile-mode all-the-icons neotree calist w3m sclang pyenv-mode virtualenvwrapper sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
+    (deft realgud sudo-edit dockerfile-mode all-the-icons neotree calist w3m sclang virtualenvwrapper sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
+
+
+;; DARK
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(mode-line ((t (:background "blue4" :box (:line-width 1 :color "medium blue") :family "\"DejaVu Sans Mono-10\"")))))
+ '(mode-line ((t (:background "blue4" :box (:line-width 1 :color "medium blue"))))))
 
 ;; Color theme
-;; (load-theme 'tsdh-dark t)
+(load-theme 'tsdh-dark t)
 
 ;; Black transparent background.
 (set-background-color "gray2")
 (add-to-list 'default-frame-alist '(background-color . "gray2"))
 (set-frame-parameter (selected-frame) 'alpha '(85 85))
 (add-to-list 'default-frame-alist '(alpha 85 85))
+
+;; LIGHT
+;; Color theme
+;; (load-theme 'adwaita t)
+
 
 ;; Deft settings
 (setq deft-recursive t)
@@ -136,7 +145,7 @@
             (local-set-key (kbd "M-.") 'jedi:goto-definition)))
 
 (add-hook 'python-mode-hook 'auto-complete-mode)
-(pyenv-mode)
+
 
 ;; Run ipython when possible.
 (when (executable-find "ipython")
@@ -283,12 +292,20 @@
 
 ;; Layout for Python projects
 (defun open-python-project ()
+  "Layout for Python projects."
   (interactive)
   (delete-other-windows)
   (my-fullscreen)
   (split-window-horizontally)
+  (next-multiframe-window)
+  (set-frame-width (selected-frame) 1200)
+  (split-window-horizontally)
+  (next-multiframe-window)
+  (set-frame-width (selected-frame) 600)
   (split-window-vertically)
-  (next-multiframe-window))
+  (next-multiframe-window)
+  (eshell)
+  )
 
 
 ;; Virtualenvwrapper settings
@@ -300,14 +317,16 @@
 
 ;; Layout for SuperCollider projects
 (defun open-sclang-project ()
+  "Layout for SuperCollider projects."
   (interactive)
   (delete-other-windows)
-  ;; (if (neo-global--window-exists-p)
-  ;;     (neotree-hide)) ; Don't need this in SC mode.
   (my-fullscreen)
   (split-window-horizontally)
-  (windmove-left)
-  (sclang-start))
+  (next-multiframe-window)
+  (set-frame-width (selected-frame) 100)
+  (sclang-start)
+  (Previous-multiframe-window)
+  )
 
 
 ;; Cua-mode
@@ -326,10 +345,13 @@
 (global-set-key (kbd "C-f") 'isearch-forward)
 (define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
 
+;; Buffers
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "C-w") 'kill-this-buffer)
 (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
+(global-set-key (kbd "M-b") 'switch-to-buffer)
+
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "<f11>") 'toggle-fullscreen)
 (global-set-key (kbd "C-S-u") 'move-text-up)
@@ -370,7 +392,13 @@
 ;; SuperCollider related
 (global-set-key (kbd "C-x l") 'open-sclang-project)
 (global-set-key (kbd "M-<return>") 'sclang-eval-region-or-line)
-(global-set-key (kbd "C-.") 'sclang-main-stop)
+(global-set-key (kbd "C-x .") 'sclang-main-stop)
+
+;; Various
+(global-set-key (kbd "C-e") 'eval-buffer)
+
+;; Little help for python-mode
+; M-k - delete until the end of block
 
 ;; Cosmetics
 (global-linum-mode t)
