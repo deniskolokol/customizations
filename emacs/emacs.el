@@ -32,7 +32,7 @@
 ;; make more packages available with the package installer
 (defvar to-install)
 (setq to-install
-      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck exec-path-from-shell yaml-mode virtualenvwrapper dockerfile-mode all-the-icons neotree realgud sudo-edit deft))
+      '(python-mode magit yasnippet jedi auto-complete autopair find-file-in-repository flycheck exec-path-from-shell yaml-mode virtualenvwrapper dockerfile-mode all-the-icons realgud sudo-edit deft neotree))
 
 (mapc 'install-if-needed to-install)
 
@@ -76,7 +76,7 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (deft realgud sudo-edit dockerfile-mode all-the-icons neotree calist w3m sclang virtualenvwrapper sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode))))
+    (deft realgud sudo-edit dockerfile-mode all-the-icons calist w3m sclang virtualenvwrapper sclang-extensions-mode exec-path-from-shell flycheck find-file-in-repository autopair jedi yasnippet magit python-mode yaml-mode neotree))))
 
 
 ;; DARK
@@ -91,13 +91,13 @@
 (load-theme 'tsdh-dark t)
 
 ;; Black transparent background.
-(set-background-color "gray2")
-(add-to-list 'default-frame-alist '(background-color . "gray2"))
+(set-background-color "gray1")
+(add-to-list 'default-frame-alist '(background-color . "gray1"))
 (set-frame-parameter (selected-frame) 'alpha '(85 85))
 (add-to-list 'default-frame-alist '(alpha 85 85))
 
-;; LIGHT
-;; Color theme
+;; ;; LIGHT
+;; ;; Color theme
 ;; (load-theme 'adwaita t)
 
 
@@ -385,6 +385,7 @@
 (global-set-key (kbd "C-x v") 'venv-deactivate)
 (global-set-key (kbd "C-M->") 'py-shift-block-right)
 (global-set-key (kbd "C-M-<") 'py-shift-block-left)
+(global-set-key (kbd "C-c l") 'py-backward-def-or-class)
 
 ;; Yasnippet cheat-sheet
 (global-set-key (kbd "C-M-y") 'yas/describe-tables)
@@ -395,7 +396,11 @@
 (global-set-key (kbd "C-x .") 'sclang-main-stop)
 
 ;; Various
-(global-set-key (kbd "C-e") 'eval-buffer)
+(global-set-key (kbd "C-e") 'eval-buffer) ;; i.e. `execute`
+
+;; Navigation
+(global-set-key (kbd "C-s-<right>") 'move-end-of-line)
+(global-set-key (kbd "C-s-<left>") 'move-beginning-of-line)
 
 ;; Little help for python-mode
 ; M-k - delete until the end of block
