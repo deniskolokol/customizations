@@ -385,18 +385,19 @@
 (global-set-key (kbd "C-x v") 'venv-deactivate)
 (global-set-key (kbd "C-M->") 'py-shift-block-right)
 (global-set-key (kbd "C-M-<") 'py-shift-block-left)
-(global-set-key (kbd "C-c l") 'py-backward-def-or-class)
 
 ;; Yasnippet cheat-sheet
 (global-set-key (kbd "C-M-y") 'yas/describe-tables)
 
-;; SuperCollider related
+;; Supercollider Related
 (global-set-key (kbd "C-x l") 'open-sclang-project)
 (global-set-key (kbd "M-<return>") 'sclang-eval-region-or-line)
 (global-set-key (kbd "C-x .") 'sclang-main-stop)
 
 ;; Various
 (global-set-key (kbd "C-e") 'eval-buffer) ;; i.e. `execute`
+(global-set-key (kbd "C-S-b") 'list-buffers)
+(global-set-key (kbd "C-S-c") 'switch-to-buffer)
 
 ;; Navigation
 (global-set-key (kbd "C-s-<right>") 'move-end-of-line)
@@ -406,7 +407,6 @@
 ; M-k - delete until the end of block
 
 ;; Cosmetics
-(global-linum-mode t)
 (global-hl-line-mode t)
 (column-number-mode t)
 (display-time-mode 1)
