@@ -1,0 +1,29 @@
+/* 
+SuperCollider Help browser custom css.
+For 'dracula' theme.
+
+Warning: add this to the end of scdoc.css
+(typically in ~/.config/SuperCollider/Help/
+ or /usr/local/share/SuperCollider/Help/)
+*/
+
+body {
+    background: #23242f;
+    color: #23242f;
+    -webkit-filter: invert(100%);
+    filter: invert(100%) ;
+}
+
+body::-webkit-scrollbar {
+  width: 12px;               /* width of the entire scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+  background: #23242f;        /* color of the tracking area */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #666;    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  border: 3px solid #23242f;  /* creates padding around scroll thumb */
+}
